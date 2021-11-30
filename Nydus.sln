@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+#
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{714BB547-C845-4652-A31A-C74CDED64886}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nydus.EntityHelper", "src\Nydus.EntityHelper\Nydus.EntityHelper.csproj", "{5845F928-8B65-4AE2-A492-E7D351E78A67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nydus.Fop", "src\Nydus.Fop\Nydus.Fop.csproj", "{81763A9E-EC5E-4B18-A6F2-8E961B56371B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nydus.Fop.Annotations", "src\Nydus.Fop.Annotations\Nydus.Fop.Annotations.csproj", "{E185490C-5FF4-4B03-8117-248539DD2795}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nydus.Fop.Swashbuckle", "src\Nydus.Fop.Swashbuckle\Nydus.Fop.Swashbuckle.csproj", "{AC18E378-649B-4593-809F-5E7B323932DE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E76295AC-90B6-46AA-8B97-992A2A65625C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nydus.IntegrationTestsServer", "test\Nydus.IntegrationTestsServer\Nydus.IntegrationTestsServer.csproj", "{AC8BC401-4011-420F-8535-A7B5D7DBD8F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nydus.Tests.Integration", "test\Nydus.Tests.Integration\Nydus.Tests.Integration.csproj", "{1D443390-AD97-4D86-A8DB-2A10F3D22790}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5845F928-8B65-4AE2-A492-E7D351E78A67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5845F928-8B65-4AE2-A492-E7D351E78A67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5845F928-8B65-4AE2-A492-E7D351E78A67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5845F928-8B65-4AE2-A492-E7D351E78A67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81763A9E-EC5E-4B18-A6F2-8E961B56371B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81763A9E-EC5E-4B18-A6F2-8E961B56371B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81763A9E-EC5E-4B18-A6F2-8E961B56371B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81763A9E-EC5E-4B18-A6F2-8E961B56371B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E185490C-5FF4-4B03-8117-248539DD2795}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E185490C-5FF4-4B03-8117-248539DD2795}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E185490C-5FF4-4B03-8117-248539DD2795}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E185490C-5FF4-4B03-8117-248539DD2795}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC18E378-649B-4593-809F-5E7B323932DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC18E378-649B-4593-809F-5E7B323932DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC18E378-649B-4593-809F-5E7B323932DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC18E378-649B-4593-809F-5E7B323932DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC8BC401-4011-420F-8535-A7B5D7DBD8F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC8BC401-4011-420F-8535-A7B5D7DBD8F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC8BC401-4011-420F-8535-A7B5D7DBD8F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC8BC401-4011-420F-8535-A7B5D7DBD8F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D443390-AD97-4D86-A8DB-2A10F3D22790}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D443390-AD97-4D86-A8DB-2A10F3D22790}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D443390-AD97-4D86-A8DB-2A10F3D22790}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D443390-AD97-4D86-A8DB-2A10F3D22790}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5845F928-8B65-4AE2-A492-E7D351E78A67} = {714BB547-C845-4652-A31A-C74CDED64886}
+		{81763A9E-EC5E-4B18-A6F2-8E961B56371B} = {714BB547-C845-4652-A31A-C74CDED64886}
+		{E185490C-5FF4-4B03-8117-248539DD2795} = {714BB547-C845-4652-A31A-C74CDED64886}
+		{AC18E378-649B-4593-809F-5E7B323932DE} = {714BB547-C845-4652-A31A-C74CDED64886}
+		{AC8BC401-4011-420F-8535-A7B5D7DBD8F5} = {E76295AC-90B6-46AA-8B97-992A2A65625C}
+		{1D443390-AD97-4D86-A8DB-2A10F3D22790} = {E76295AC-90B6-46AA-8B97-992A2A65625C}
+	EndGlobalSection
+EndGlobal

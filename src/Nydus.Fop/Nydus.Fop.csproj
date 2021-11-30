@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <Authors>Pablo Pioli</Authors>
+        <LangVersion>10</LangVersion>
+        <Company />
+        <Description>Querying, Filtering and Paging helpers</Description>
+        <Version>0.1.0</Version>
+        <Copyright>(c) $([System.DateTime]::Now.Year) Pablo Pioli</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/</PackageProjectUrl>
+        <!--        <RepositoryUrl>https://github.com/</RepositoryUrl>-->
+        <!--        <RepositoryType>git</RepositoryType>-->
+        <PackageTags>Asp net6 Querying Sorting Filtering EntityFramework</PackageTags>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Nydus.Fop</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+    <!--  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1' Or '$(TargetFramework)'=='net5.0'">-->
+
+    <!--  </ItemGroup>-->
+
+    <!--  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0' Or '$(TargetFramework)'=='net461'">-->
+    <!--    <PackageReference Include="Microsoft.AspNetCore" Version="2.1.3" />-->
+    <!--    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.2" />-->
+    <!--  </ItemGroup>-->
+
+    <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+        <DebugType>full</DebugType>
+        <DebugSymbols>True</DebugSymbols>
+    </PropertyGroup>
+
+</Project>

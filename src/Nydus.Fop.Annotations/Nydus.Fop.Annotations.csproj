@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Authors>Pablo Pioli</Authors>
+        <LangVersion>10</LangVersion>
+        <Company />
+        <Description>Asp .NetCore FOP Annotations</Description>
+        <Copyright>(c) $([System.DateTime]::Now.Year) Pablo Pioli</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Version>0.1.0</Version>
+        <PackageProjectUrl>https://github.com/</PackageProjectUrl>
+        <!--        <RepositoryUrl>https://github.com/</RepositoryUrl>-->
+        <!--        <RepositoryType>git</RepositoryType>-->
+        <PackageTags>Asp net6 Annotation Querying Sorting Filtering EntityFramework</PackageTags>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Nydus.Fop.Annotations</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Nydus.Fop\Nydus.Fop.csproj" />
+    </ItemGroup>
+
+    <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+        <DebugType>full</DebugType>
+        <DebugSymbols>True</DebugSymbols>
+    </PropertyGroup>
+
+</Project>
