@@ -34,8 +34,7 @@ public class CoreKitOperationFilter : IOperationFilter
                     Required = false,
                     Schema = new OpenApiSchema
                     {
-                        Type = "string",
-                        Example = new OpenApiString("+id-descripcion"),
+                        Type = "string"
                     },
                 });
 
@@ -56,8 +55,7 @@ public class CoreKitOperationFilter : IOperationFilter
                     Required = false,
                     Schema = new OpenApiSchema
                     {
-                        Type = "integer",
-                        Example = new OpenApiInteger(10),
+                        Type = "integer"
                     },
                 });
 
@@ -71,8 +69,7 @@ public class CoreKitOperationFilter : IOperationFilter
                     Required = false,
                     Schema = new OpenApiSchema
                     {
-                        Type = "integer",
-                        Example = new OpenApiInteger(1),
+                        Type = "integer"
                     },
                 });
 
