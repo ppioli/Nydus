@@ -13,16 +13,16 @@ public class EntityHelper<TEntity, TUser, TUserKey> : MapperHelper<TEntity>, IEn
     where TUser : IdentityUser<TUserKey>
     where TUserKey : IEquatable<TUserKey>
 {
-    protected EntityHelper(DbContext dbContext, IMapper mapper, MapperHelperOptions<TEntity>? options) : base(
-        dbContext,
-        mapper,
-        options)
-    {
-    }
-
-    public HttpContext? Context { get; set; }
-
+    private readonly IHttpContextAccessor _contextAccessor;
+    
     public override IQueryable<TEntity> Entities => base.Entities.Where(s => !s.SoftDeleted);
+    
+    protected EntityHelper(DbContext dbContext, IMapper mapper, IHttpContextAccessor contextAccessor) : base(
+        dbContext,
+        mapper)
+    {
+        _contextAccessor = contextAccessor;
+    }
 
     public override TEntity? TryFind(object id)
     {
@@ -58,9 +58,9 @@ public class EntityHelper<TEntity, TUser, TUserKey> : MapperHelper<TEntity>, IEn
 
     public HttpContext GetHttpContext()
     {
-        if (Context == null) throw new Exception("The http context was not initialized on the entity helper");
+        if (_contextAccessor?.HttpContext == null) throw new Exception("The http context was not initialized on the entity helper");
 
-        return Context;
+        return _contextAccessor?.HttpContext!;
     }
 
     public TUser GetLoggedUser()

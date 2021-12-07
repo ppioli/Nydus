@@ -16,21 +16,27 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
     private readonly IMapper _mapper;
     private readonly IKey _primaryKey;
     protected readonly DbContext DbContext;
-
-    public MapperHelper(DbContext dbContext, IMapper mapper, MapperHelperOptions<TEntity>? options)
+    private IQueryable<TEntity> _queryable;
+    
+    public virtual IQueryable<TEntity> Entities => _queryable;
+    
+    public MapperHelper(DbContext dbContext, IMapper mapper, MapperHelperOptions<TEntity>? options = null)
     {
         DbContext = dbContext;
         _dbSet = dbContext.Set<TEntity>();
-        Entities = options?.GlobalFilter != null ? _dbSet.Where(options.GlobalFilter) : _dbSet;
+        _queryable = _dbSet;
         _mapper = mapper;
         _config = mapper.ConfigurationProvider;
-        _primaryKey = dbContext.Model
-            .FindEntityType(typeof(TEntity))
-            .FindPrimaryKey();
+        _primaryKey = dbContext.Model?
+            .FindEntityType(typeof(TEntity))?
+            .FindPrimaryKey() ?? throw new Exception($"Could not find primary key for Entity {nameof(TEntity)}");
+        
+        SetOptions(options);
     }
 
-    public MapperHelper(DbContext dbContext, IMapper mapper) : this(dbContext, mapper, null)
+    public void SetOptions(MapperHelperOptions<TEntity>? options = null)
     {
+        _queryable = options?.GlobalFilter != null ? _dbSet.Where(options.GlobalFilter) : _dbSet;
     }
 
     public IQueryable<TDto> Dtos<TDto>()
@@ -39,8 +45,6 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
             .UseAsDataSource(_config)
             .For<TDto>();
     }
-
-    public virtual IQueryable<TEntity> Entities { get; }
 
     public async Task<TDto> Create<TDto, TCreate>(TCreate model, TEntity? created = null)
     {
@@ -57,11 +61,23 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
         return _mapper.Map<TDto>(entity);
     }
 
+    public Task<TDto> Create<TDto>(TDto model, TEntity? created = null)
+    {
+        return Create<TDto, TDto>(model, created);
+    }
+
     public Task<TDto> Update<TDto, TCreate>(TCreate model, object id)
     {
         var entity = Find(id);
 
         return Update<TDto, TCreate>(model, entity);
+    }
+    
+    public Task<TDto> Update<TDto>(TDto model, object id)
+    {
+        var entity = Find(id);
+
+        return Update<TDto, TDto>(model, entity);
     }
 
     public async Task<TDto> Update<TDto, TCreate>(TCreate model, TEntity entity)
@@ -78,10 +94,10 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
 
         return _mapper.Map<TDto>(entity);
     }
-
-    public virtual TEntity? TryFind(object id)
+    
+    public Task<TDto> Update<TDto>(TDto model, TEntity entity)
     {
-        return _dbSet.Find(id);
+        return Update<TDto, TDto>(model, entity);
     }
 
     public TDto? Get<TDto>(object id)
@@ -93,7 +109,7 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
 
     public async Task Delete(object o)
     {
-        var deleted = await _dbSet.FindAsync(o);
+        var deleted = await FindAsync(o);
 
         HandleDelete(deleted);
 
@@ -121,6 +137,21 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
     public virtual void HandleDelete(TEntity e)
     {
         DbContext.Remove(e);
+    }
+    
+    public virtual TEntity? TryFind(object id)
+    {
+        return _dbSet.Find(id);
+    }
+    
+    private async Task<TEntity?> TryFindAsync(object id)
+    {
+        return await _dbSet.FindAsync(id);
+    }
+    
+    private async Task<TEntity> FindAsync(object id)
+    {
+        return await TryFindAsync(id) ?? throw new EntityNotFoundException(typeof(TEntity), id);
     }
 
     private TEntity Find(object id)
