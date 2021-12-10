@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -13,7 +14,7 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
 {
     private readonly IConfigurationProvider _config;
     private readonly DbSet<TEntity> _dbSet;
-    private readonly IMapper _mapper;
+    public IMapper Mapper { get; }
     private readonly IKey _primaryKey;
     protected readonly DbContext DbContext;
     private IQueryable<TEntity> _queryable;
@@ -25,8 +26,9 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
         DbContext = dbContext;
         _dbSet = dbContext.Set<TEntity>();
         _queryable = _dbSet;
-        _mapper = mapper;
+        Mapper = mapper;
         _config = mapper.ConfigurationProvider;
+        
         _primaryKey = dbContext.Model?
             .FindEntityType(typeof(TEntity))?
             .FindPrimaryKey() ?? throw new Exception($"Could not find primary key for Entity {nameof(TEntity)}");
@@ -36,7 +38,7 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
 
     public void SetOptions(MapperHelperOptions<TEntity>? options = null)
     {
-        _queryable = options?.GlobalFilter != null ? _dbSet.Where(options.GlobalFilter) : _dbSet;
+        _queryable = options?.QueryableBuilder != null ? options.QueryableBuilder(_dbSet) : _dbSet;
     }
 
     public IQueryable<TDto> Dtos<TDto>()
@@ -50,7 +52,7 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
     {
         var entity = created ?? new TEntity();
 
-        _mapper.Map(model, entity);
+        Mapper.Map(model, entity);
 
         HandleCreate(entity);
 
@@ -58,7 +60,7 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
 
         await DbContext.SaveChangesAsync();
 
-        return _mapper.Map<TDto>(entity);
+        return Mapper.Map<TDto>(entity);
     }
 
     public Task<TDto> Create<TDto>(TDto model, TEntity? created = null)
@@ -84,7 +86,7 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
     {
         HandleUpdate(entity);
 
-        _mapper.Map(model, entity);
+        Mapper.Map(model, entity);
 
         await DbContext.SaveChangesAsync();
 
@@ -92,7 +94,7 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
 
         await DbContext.SaveChangesAsync();
 
-        return _mapper.Map<TDto>(entity);
+        return Mapper.Map<TDto>(entity);
     }
     
     public Task<TDto> Update<TDto>(TDto model, TEntity entity)
@@ -104,7 +106,12 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
     {
         var entity = TryFind(id);
 
-        return entity == null ? default : _mapper.Map<TDto>(entity);
+        return entity == null ? default : Mapper.Map<TDto>(entity);
+    }
+
+    public IEnumerable<TDto> Proyect<TDto>( IQueryable<TEntity> queryable )
+    {
+        return Mapper.ProjectTo<TDto>(queryable);
     }
 
     public async Task Delete(object o)
@@ -118,12 +125,12 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
 
     public TDto ToDto<TDto>(TEntity entity, Action<IMappingOperationOptions> opts)
     {
-        return _mapper.Map<TDto>(entity, opts);
+        return Mapper.Map<TDto>(entity, opts);
     }
 
     public IQueryable<TDto> ToDto<TDto>(IQueryable<TEntity> entities)
     {
-        return _mapper.ProjectTo<TDto>(entities);
+        return Mapper.ProjectTo<TDto>(entities);
     }
 
     protected virtual void HandleUpdate(TEntity e)
@@ -159,10 +166,6 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
         return TryFind(id) ?? throw new EntityNotFoundException(typeof(TEntity), id);
     }
 
-    // public IEnumerable<string> FindPrimaryKeyNames(TEntity entity) {
-    //     return from p in dbContext.FindPrimaryKeyProperties(entity) 
-    //         select p.Name;
-    // }
 
     public object KeyOf(TEntity entity)
     {

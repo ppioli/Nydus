@@ -14,6 +14,9 @@
         <PackageTags>Asp net6 Annotation Querying Sorting Filtering EntityFramework</PackageTags>
         <Nullable>enable</Nullable>
         <RootNamespace>Nydus.Fop.Annotations</RootNamespace>
+
+        <VersionPrefix>$(VERSION_PREFIX)</VersionPrefix>
+        <VersionSuffix>$(BUILD_NUMBER)</VersionSuffix>
     </PropertyGroup>
 
     <ItemGroup>
