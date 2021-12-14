@@ -9,14 +9,14 @@ RELEASE=''
 
 VERSION_PREFIX="$(cat ./version)"
 export VERSION_PREFIX
-BUILD_NUMBER="b+$(date '+%s')"
-export BUILD_NUMBER
+VERSION_SUFFIX="$(date '+%s')"
+export VERSION_SUFFIX
 
-
+echo "$VERSION_SUFFIX";
 
 show_help() {
-  echo "-h Show this messasge"
-  echo "-r Release build"
+  echo "-h Show this message"
+  echo "-r Build release version"
 }
 
 while getopts "h?r" opt; do
@@ -34,7 +34,14 @@ done
 shift $((OPTIND - 1))
 [ "${1:-}" = "--" ] && shift
 
+export RELEASE;
+
 dotnet pack -o "${SCRIPT_DIR}/../bin" "${SCRIPT_DIR}/../src/Nydus.EntityHelper" 
 dotnet pack -o "${SCRIPT_DIR}/../bin" "${SCRIPT_DIR}/../src/Nydus.Fop"
 dotnet pack -o "${SCRIPT_DIR}/../bin" "${SCRIPT_DIR}/../src/Nydus.Fop.Annotations"
 dotnet pack -o "${SCRIPT_DIR}/../bin" "${SCRIPT_DIR}/../src/Nydus.Fop.Swashbuckle"
+
+if [[ "$RELEASE" == '1' ]]; then
+  echo "Publishing"
+  bash "${SCRIPT_DIR}/publish.sh" "${VERSION_PREFIX}"
+fi

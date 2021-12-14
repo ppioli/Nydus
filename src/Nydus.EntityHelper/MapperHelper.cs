@@ -16,7 +16,7 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
     private readonly DbSet<TEntity> _dbSet;
     public IMapper Mapper { get; }
     private readonly IKey _primaryKey;
-    protected readonly DbContext DbContext;
+    public DbContext DbContext { get; }
     private IQueryable<TEntity> _queryable;
     
     public virtual IQueryable<TEntity> Entities => _queryable;

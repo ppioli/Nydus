@@ -2,11 +2,13 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace Nydus.EntityHelper;
 
 public interface IMapperHelper<TEntity>
 {
+    DbContext DbContext { get; }
     IQueryable<TEntity> Entities { get; }
     IQueryable<TDto> Dtos<TDto>();
     Task<TDto> Create<TDto, TCreate>(TCreate model, TEntity? created = default);

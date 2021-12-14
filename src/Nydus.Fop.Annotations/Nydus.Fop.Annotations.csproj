@@ -16,7 +16,7 @@
         <RootNamespace>Nydus.Fop.Annotations</RootNamespace>
 
         <VersionPrefix>$(VERSION_PREFIX)</VersionPrefix>
-        <VersionSuffix>$(BUILD_NUMBER)</VersionSuffix>
+        <VersionSuffix Condition="'$(RELEASE)'==''">$(VERSION_SUFFIX)</VersionSuffix>
     </PropertyGroup>
 
     <ItemGroup>
