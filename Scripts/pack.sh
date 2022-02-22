@@ -9,10 +9,11 @@ RELEASE=''
 
 VERSION_PREFIX="$(cat ./version)"
 export VERSION_PREFIX
+echo "$VERSION_PREFIX"
+
 VERSION_SUFFIX="$(date '+%s')"
 export VERSION_SUFFIX
-
-echo "$VERSION_SUFFIX";
+echo "$VERSION_SUFFIX"
 
 show_help() {
   echo "-h Show this message"
@@ -35,6 +36,10 @@ shift $((OPTIND - 1))
 [ "${1:-}" = "--" ] && shift
 
 export RELEASE;
+dotnet build "${SCRIPT_DIR}/../src/Nydus.EntityHelper"
+dotnet build "${SCRIPT_DIR}/../src/Nydus.Fop"
+dotnet build "${SCRIPT_DIR}/../src/Nydus.Fop.Annotations"
+dotnet build "${SCRIPT_DIR}/../src/Nydus.Fop.Swashbuckle"
 
 dotnet pack -o "${SCRIPT_DIR}/../bin" "${SCRIPT_DIR}/../src/Nydus.EntityHelper" 
 dotnet pack -o "${SCRIPT_DIR}/../bin" "${SCRIPT_DIR}/../src/Nydus.Fop"

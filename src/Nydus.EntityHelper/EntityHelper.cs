@@ -4,16 +4,15 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Nydus.EntityHelper.Extension;
 
 namespace Nydus.EntityHelper;
 
-public class EntityHelper<TEntity, TUser, TUserKey> : MapperHelper<TEntity>, IEntityHelper<TEntity, TUser, TUserKey>
+public abstract class EntityHelper<TEntity, TUser, TUserKey> : MapperHelper<TEntity>, IEntityHelper<TEntity, TUser, TUserKey>
     where TEntity : class, IEntity<TUser, TUserKey>, new()
     where TUser : IdentityUser<TUserKey>
     where TUserKey : IEquatable<TUserKey>
 {
-    private readonly IHttpContextAccessor _contextAccessor;
+    protected readonly IHttpContextAccessor ContextAccessor;
     
     public override IQueryable<TEntity> Entities => base.Entities.Where(s => !s.SoftDeleted);
     
@@ -21,7 +20,7 @@ public class EntityHelper<TEntity, TUser, TUserKey> : MapperHelper<TEntity>, IEn
         dbContext,
         mapper)
     {
-        _contextAccessor = contextAccessor;
+        ContextAccessor = contextAccessor;
     }
 
     public override TEntity? TryFind(object id)
@@ -56,22 +55,12 @@ public class EntityHelper<TEntity, TUser, TUserKey> : MapperHelper<TEntity>, IEn
         e.SoftDeleted = true;
     }
 
-    public HttpContext GetHttpContext()
+    protected HttpContext GetHttpContext()
     {
-        if (_contextAccessor?.HttpContext == null) throw new Exception("The http context was not initialized on the entity helper");
+        if (ContextAccessor?.HttpContext == null) throw new Exception("The http context was not initialized on the entity helper");
 
-        return _contextAccessor?.HttpContext!;
+        return ContextAccessor?.HttpContext!;
     }
 
-    public TUser GetLoggedUser()
-    {
-        var userId = GetHttpContext().User.GetId<TUserKey>();
-        if (userId == null) throw new Exception("Could not get id for the current user");
-
-        var user = DbContext.Set<TUser>().Find(userId);
-
-        if (user == null) throw new Exception("Could not get logged user");
-
-        return user;
-    }
+    public abstract TUser GetLoggedUser();
 }
