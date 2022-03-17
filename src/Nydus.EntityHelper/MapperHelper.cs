@@ -62,6 +62,28 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
 
         return Mapper.Map<TDto>(entity);
     }
+    
+    public async Task<IEnumerable<TDto>> CreateBatch<TDto>(IEnumerable<TDto> model)
+    {
+        var created = new List<TEntity>();
+
+        foreach (var item in model)
+        {
+            var entity = new TEntity();
+
+            Mapper.Map(item, entity);
+
+            HandleCreate(entity);
+
+            created.Add(entity);
+        } 
+        
+        _dbSet.AttachRange(created);
+
+        await DbContext.SaveChangesAsync();
+
+        return model;
+    }
 
     public Task<TDto> Create<TDto>(TDto model, TEntity? created = null)
     {
@@ -109,7 +131,7 @@ public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : clas
         return entity == null ? default : Mapper.Map<TDto>(entity);
     }
 
-    public IEnumerable<TDto> Proyect<TDto>( IQueryable<TEntity> queryable )
+    public IEnumerable<TDto> Project<TDto>( IQueryable<TEntity> queryable )
     {
         return Mapper.ProjectTo<TDto>(queryable);
     }

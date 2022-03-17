@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -13,6 +14,7 @@ public interface IMapperHelper<TEntity>
     IQueryable<TDto> Dtos<TDto>();
     Task<TDto> Create<TDto, TCreate>(TCreate model, TEntity? created = default);
     Task<TDto> Create<TDto>(TDto model, TEntity? created = default);
+    Task<IEnumerable<TDto>> CreateBatch<TDto>(IEnumerable<TDto> model);
     Task<TDto> Update<TDto, TCreate>(TCreate model, object id);
     Task<TDto> Update<TDto>(TDto model, object id);
     Task<TDto> Update<TDto, TCreate>(TCreate model, TEntity entity);
