@@ -7,9 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Nydus.EntityHelper;
 
-public interface IMapperHelper<TEntity>
+public interface IMapperHelper<TEntity, out TDbContext>
+where TDbContext : DbContext
 {
-    DbContext DbContext { get; }
+    TDbContext DbContext { get; }
     IQueryable<TEntity> Entities { get; }
     IQueryable<TDto> Dtos<TDto>();
     Task<TDto> Create<TDto, TCreate>(TCreate model, TEntity? created = default);

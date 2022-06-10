@@ -10,18 +10,20 @@ using Nydus.EntityHelper.Exceptions;
 
 namespace Nydus.EntityHelper;
 
-public class MapperHelper<TEntity> : IMapperHelper<TEntity> where TEntity : class, new()
+public class MapperHelper<TEntity, TDbContext> : IMapperHelper<TEntity, TDbContext> 
+    where TEntity : class, new()
+    where TDbContext: DbContext 
 {
     private readonly IConfigurationProvider _config;
     private readonly DbSet<TEntity> _dbSet;
     public IMapper Mapper { get; }
     private readonly IKey _primaryKey;
-    public DbContext DbContext { get; }
+    public TDbContext DbContext { get; }
     private IQueryable<TEntity> _queryable;
     
     public virtual IQueryable<TEntity> Entities => _queryable;
     
-    public MapperHelper(DbContext dbContext, IMapper mapper, MapperHelperOptions<TEntity>? options = null)
+    public MapperHelper(TDbContext dbContext, IMapper mapper, MapperHelperOptions<TEntity>? options = null)
     {
         DbContext = dbContext;
         _dbSet = dbContext.Set<TEntity>();

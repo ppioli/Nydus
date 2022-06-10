@@ -29,22 +29,22 @@ public static class ServiceCollectionExtension
             typeof(TDbContext).Assembly);
 
         services.AddScoped<DbContext, TDbContext>();
-        services.AddScoped(typeof(IMapperHelper<>), typeof(MapperHelper<>));
+        services.AddScoped(typeof(IMapperHelper<,>), typeof(MapperHelper<,>));
 
         return services;
     }
 
-    public interface IEntityHelperFactory
-    {
-        IEntityHelper<TEntity, TUser, TRol> Get<TEntity, TUser, TRol>(MapperHelperOptions<TEntity>? options)
-            where TEntity : class, IEntity<TUser, TRol>, new()
-            where TUser : IdentityUser<TRol>
-            where TRol : IEquatable<TRol>;
-    
-        IEntityHelper<TEntity, TUser, TRol> Get<TEntity, TUser, TRol>()
-            where TEntity : class, IEntity<TUser, TRol>, new()
-            where TUser : IdentityUser<TRol>
-            where TRol : IEquatable<TRol>;
-    }
+    // public interface IEntityHelperFactory
+    // {
+    //     IEntityHelper<TEntity, TUser, TRol> Get<TEntity, TUser, TRol>(MapperHelperOptions<TEntity>? options)
+    //         where TEntity : class, IEntity<TUser, TRol>, new()
+    //         where TUser : IdentityUser<TRol>
+    //         where TRol : IEquatable<TRol>;
+    //
+    //     IEntityHelper<TEntity, TUser, TRol> Get<TEntity, TUser, TRol>()
+    //         where TEntity : class, IEntity<TUser, TRol>, new()
+    //         where TUser : IdentityUser<TRol>
+    //         where TRol : IEquatable<TRol>;
+    // }
 }
     
