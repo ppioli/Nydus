@@ -31,7 +31,7 @@ public class MapperHelper<TEntity, TDbContext> : IMapperHelper<TEntity, TDbConte
         Mapper = mapper;
         _config = mapper.ConfigurationProvider;
         
-        _primaryKey = dbContext.Model?
+        _primaryKey = dbContext.Model
             .FindEntityType(typeof(TEntity))?
             .FindPrimaryKey() ?? throw new Exception($"Could not find primary key for Entity {nameof(TEntity)}");
         
@@ -50,13 +50,9 @@ public class MapperHelper<TEntity, TDbContext> : IMapperHelper<TEntity, TDbConte
             .For<TDto>();
     }
 
-    public async Task<TDto> Create<TDto, TCreate>(TCreate model, TEntity? created = null)
+    public async Task<TDto> Create<TDto, TCreate>(TCreate model, TEntity? created = null, Action<IMappingOperationOptions<TCreate, TEntity>>? opts = null)
     {
-        var entity = created ?? new TEntity();
-
-        Mapper.Map(model, entity);
-
-        HandleCreate(entity);
+        var entity = opts != null ? CreateEntity(model, created, opts ) : CreateEntity(model, created);
 
         _dbSet.Attach(entity);
 
@@ -64,8 +60,13 @@ public class MapperHelper<TEntity, TDbContext> : IMapperHelper<TEntity, TDbConte
 
         return Mapper.Map<TDto>(entity);
     }
+
+    public Task<TDto> Create<TDto>(TDto model, TEntity? created = null, Action<IMappingOperationOptions<TDto, TEntity>>? opts = null)
+    {
+        return Create<TDto, TDto>(model, created, opts);
+    }
     
-    public async Task<IEnumerable<TDto>> CreateBatch<TDto>(IEnumerable<TDto> model)
+    public async Task<IEnumerable<TDto>> CreateBatch<TDto>(ICollection<TDto> model, Action<IMappingOperationOptions<TDto, TEntity>>? opts = null)
     {
         var created = new List<TEntity>();
 
@@ -73,7 +74,14 @@ public class MapperHelper<TEntity, TDbContext> : IMapperHelper<TEntity, TDbConte
         {
             var entity = new TEntity();
 
-            Mapper.Map(item, entity);
+            if (opts != null)
+            {
+                Mapper.Map(item, entity, opts);    
+            }
+            else
+            {
+                Mapper.Map(item, entity);
+            }
 
             HandleCreate(entity);
 
@@ -87,30 +95,46 @@ public class MapperHelper<TEntity, TDbContext> : IMapperHelper<TEntity, TDbConte
         return model;
     }
 
-    public Task<TDto> Create<TDto>(TDto model, TEntity? created = null)
+    public TEntity CreateEntity<TCreate>(TCreate model, TEntity? created = default, Action<IMappingOperationOptions<TCreate, TEntity>>? opts = null)
     {
-        return Create<TDto, TDto>(model, created);
+        var entity = created ?? new TEntity();
+
+        if (opts != null)
+        {
+            Mapper.Map(model, entity, opts);    
+        }
+        else
+        {
+            Mapper.Map(model, entity);
+        }
+
+        HandleCreate(entity);
+
+        return entity;
     }
 
-    public Task<TDto> Update<TDto, TCreate>(TCreate model, object id)
+    public TEntity UpdateEntityById<TCreate>(TCreate model, object id, Action<IMappingOperationOptions<TCreate, TEntity>>? opts = null)
     {
         var entity = Find(id);
-
-        return Update<TDto, TCreate>(model, entity);
-    }
-    
-    public Task<TDto> Update<TDto>(TDto model, object id)
-    {
-        var entity = Find(id);
-
-        return Update<TDto, TDto>(model, entity);
-    }
-
-    public async Task<TDto> Update<TDto, TCreate>(TCreate model, TEntity entity)
-    {
+        
         HandleUpdate(entity);
 
-        Mapper.Map(model, entity);
+        if (opts != null)
+        {
+            Mapper.Map(model, entity, opts);    
+        }
+        else
+        {
+            Mapper.Map(model, entity);
+        }
+        
+
+        return entity;
+    }
+    
+    public async Task<TDto> Update<TDto, TCreate>(TCreate model, TEntity entity, Action<IMappingOperationOptions<TCreate, TEntity>>? opts = null)
+    {
+        UpdateEntity(model, entity, opts);
 
         await DbContext.SaveChangesAsync();
 
@@ -121,10 +145,41 @@ public class MapperHelper<TEntity, TDbContext> : IMapperHelper<TEntity, TDbConte
         return Mapper.Map<TDto>(entity);
     }
     
-    public Task<TDto> Update<TDto>(TDto model, TEntity entity)
+    public TEntity UpdateEntity<TCreate>(TCreate model, TEntity entity, Action<IMappingOperationOptions<TCreate, TEntity>>? opts = null)
     {
-        return Update<TDto, TDto>(model, entity);
+        HandleUpdate(entity);
+
+        if (opts != null)
+        {
+            Mapper.Map(model, entity, opts);    
+        }
+        else
+        {
+            Mapper.Map(model, entity);
+        }
+
+        return entity;
     }
+    
+    public Task<TDto> Update<TDto, TCreate>(TCreate model, object id, Action<IMappingOperationOptions<TCreate, TEntity>>? opts = null)
+    {
+        var entity = Find(id);
+
+        return Update<TDto, TCreate>(model, entity, opts);
+    }
+    
+    public Task<TDto> Update<TDto>(TDto model, TEntity entity, Action<IMappingOperationOptions<TDto,TEntity>>? opts = null)
+    {
+        return Update<TDto, TDto>(model, entity, opts);
+    }
+
+    public Task<TDto> Update<TDto>(TDto model, object id, Action<IMappingOperationOptions<TDto, TEntity>>? opts = null)
+    {
+        var entity = Find(id);
+
+        return Update<TDto, TDto>(model, entity, opts);
+    }
+    
 
     public TDto? Get<TDto>(object id)
     {
@@ -147,9 +202,11 @@ public class MapperHelper<TEntity, TDbContext> : IMapperHelper<TEntity, TDbConte
         await DbContext.SaveChangesAsync();
     }
 
-    public TDto ToDto<TDto>(TEntity entity, Action<IMappingOperationOptions> opts)
+    public TDto ToDto<TDto>(TEntity entity, Action<IMappingOperationOptions<TEntity, TDto>>? opts = null)
     {
-        return Mapper.Map<TDto>(entity, opts);
+        
+        return opts != null ? Mapper.Map(entity, opts) : Mapper.Map<TDto>(entity);    
+        
     }
 
     public IQueryable<TDto> ToDto<TDto>(IQueryable<TEntity> entities)
@@ -157,11 +214,11 @@ public class MapperHelper<TEntity, TDbContext> : IMapperHelper<TEntity, TDbConte
         return Mapper.ProjectTo<TDto>(entities);
     }
 
-    protected virtual void HandleUpdate(TEntity e)
+    public virtual void HandleUpdate(TEntity e)
     {
     }
 
-    protected virtual void HandleCreate(TEntity e)
+    public virtual void HandleCreate(TEntity e)
     {
     }
 

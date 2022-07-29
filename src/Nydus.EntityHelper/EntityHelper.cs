@@ -3,7 +3,6 @@ using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Nydus.EntityHelper;
@@ -37,29 +36,29 @@ public class EntityHelper<TEntity, TUser, TUserKey, TDbContext> : MapperHelper<T
         return find;
     }
 
-    protected override void HandleUpdate(TEntity e)
+    public override void HandleUpdate(TEntity e)
     {
         if (_user == null)
         {
             throw new Exception("No logged user attempting to modify entities");
         }
 
-        e.UpdatedAt = DateTime.Now;
+        e.UpdatedAt = DateTime.UtcNow;
         e.UpdatedBy = _user;
         e.UpdatedById = _user.Id;
     }
 
-    protected override void HandleCreate(TEntity e)
+    public override void HandleCreate(TEntity e)
     {
         if (_user == null)
         {
             throw new Exception("No logged user attempting to modify entities");
         }
 
-        e.UpdatedAt = DateTime.Now;
+        e.UpdatedAt = DateTime.UtcNow;
         e.UpdatedById = _user.Id;
         e.UpdatedBy = _user;
-        e.CreatedAt = DateTime.Now;
+        e.CreatedAt = DateTime.UtcNow;
         e.CreatedById = _user.Id;
         e.CreatedBy = _user;
     }

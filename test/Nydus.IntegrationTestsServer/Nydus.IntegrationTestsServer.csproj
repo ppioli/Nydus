@@ -24,12 +24,12 @@
     <!--    </ItemGroup>-->
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="6.0.0"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.0"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="6.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.0" />
 
-        <ProjectReference Include="..\..\src\Nydus.Fop.Annotations\Nydus.Fop.Annotations.csproj"/>
-        <ProjectReference Include="..\..\src\Nydus.Fop.Swashbuckle\Nydus.Fop.Swashbuckle.csproj"/>
+        <ProjectReference Include="..\..\src\Nydus.Fop.Annotations\Nydus.Fop.Annotations.csproj" />
+        <ProjectReference Include="..\..\src\Nydus.Fop.Swashbuckle\Nydus.Fop.Swashbuckle.csproj" />
     </ItemGroup>
 
 </Project>

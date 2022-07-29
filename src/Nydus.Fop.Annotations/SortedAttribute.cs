@@ -27,5 +27,6 @@ public class SortedAttribute : ActionFilterAttribute, ICoreKitAttribute
         if (sortOptions == null) return;
 
         objectResult.Value = queryable.ApplySorting(sortOptions);
+        
     }
 }

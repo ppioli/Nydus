@@ -43,7 +43,6 @@ public class Startup
             });
 
         services.AddMvc(mvcOptions => mvcOptions.EnableEndpointRouting = false);
-        ;
     }
 
     public void Configure(IApplicationBuilder app)

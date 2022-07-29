@@ -24,15 +24,15 @@ public class PaginatedAttribute : ActionFilterAttribute, ICoreKitAttribute
 
         var objectResult = context.Result as ObjectResult;
 
-        if (!(objectResult?.Value is IQueryable queryable))
+        if (objectResult?.Value is not IQueryable queryable)
             // TODO improve this error message
             throw new Exception("Invalid things");
+
 
         var paginationOptions = PaginationContextProcessor.ParsePagination(
             context,
             _defaultPageSize,
             _maxPageSize);
-
 
         objectResult.Value = queryable.AsPageResult(paginationOptions);
     }
